@@ -4,13 +4,13 @@ require('dotenv').config();
 
 const app = express();
 
-//ROUTES
+// Import Routes
+const userRoutes = require('./routes/users');
 
-app.get('/', (req, res)=>{
-    res.send('Hi!');
-})
+app.use('/users', userRoutes);
 
-//Connect to DB
+
+// Connect to DB
 mongoose.connect(
     process.env.DB_CONNECTION,
     { useNewUrlParser: true, useUnifiedTopology: true },
