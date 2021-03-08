@@ -15,4 +15,4 @@ const DevicesSchema = mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Devices')
+module.exports = mongoose.model('Devices', DevicesSchema)
