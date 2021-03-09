@@ -1,10 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 require('dotenv').config();
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "warranty-maintenance-company",
+            description: "Engineers and Devices Management System",
+            version: "1.0.0",
+        },
+        servers: [
+            {
+                url: "http://localhost:3000/"
+            }
+        ]
+    },
+    apis: ["./routes/*.js"]
+}
+const specs = swaggerJsDoc(options)
 
 const app = express();
 app.use(bodyParser.json())
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
+
 
 // Import Routes
 const userRoutes = require('./routes/users');
