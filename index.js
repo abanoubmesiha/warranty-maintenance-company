@@ -47,4 +47,5 @@ app.use('/', (req, res)=>{
 //     ()=>console.log('Connected to DB!')
 // )
 
-app.listen(process.env.PORT || 3000, ()=>console.log("Listening to the app!!!"))
+let port = process.env.PORT || 3000
+app.listen(port, ()=>console.log("Listening to the app on port " + port))
