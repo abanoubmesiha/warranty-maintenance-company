@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
 // const swaggerUI = require('swagger-ui-express');
 // const swaggerJsDoc = require('swagger-jsdoc');
@@ -40,12 +40,12 @@ app.use('/', (req, res)=>{
 
 
 // Connect to DB
-mongoose.connect(
-    // process.env.DB_CONNECTION || 
-    "mongodb+srv://WAR-OWNER:P@ssw0rdWAR@warranty-maintenance-co.c46g7.mongodb.net/development?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    ()=>console.log('Connected to DB!')
-)
+// mongoose.connect(
+//     // process.env.DB_CONNECTION || 
+//     "mongodb+srv://WAR-OWNER:P@ssw0rdWAR@warranty-maintenance-co.c46g7.mongodb.net/development?retryWrites=true&w=majority",
+//     { useNewUrlParser: true, useUnifiedTopology: true },
+//     ()=>console.log('Connected to DB!')
+// )
 
 let port = process.env.PORT || 3000
 app.listen(port, ()=>console.log("Listening to the app on port " + port))
