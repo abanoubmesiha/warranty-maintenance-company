@@ -2,7 +2,7 @@
   "name": "warranty-maintenance-company",
   "version": "1.0.0",
   "description": "Engineers and Devices Management System",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "build": "node app.js"
