@@ -4,7 +4,8 @@
   "description": "Engineers and Devices Management System",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "build": "node app.js"
   },
   "author": "Abanoub Ayoub",
   "license": "ISC",
