@@ -41,9 +41,10 @@ app.use('/', (req, res)=>{
 
 // Connect to DB
 mongoose.connect(
-    process.env.DB_CONNECTION,
+    // process.env.DB_CONNECTION || 
+    "mongodb+srv://WAR-OWNER:P@ssw0rdWAR@warranty-maintenance-co.c46g7.mongodb.net/development?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true },
     ()=>console.log('Connected to DB!')
 )
 
-app.listen(process.env.PORT || 3000)
+app.listen(process.env.PORT || 3000, ()=>console.log("Listening to the app!!!"))

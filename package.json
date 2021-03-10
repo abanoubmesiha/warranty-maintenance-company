@@ -2,10 +2,10 @@
   "name": "warranty-maintenance-company",
   "version": "1.0.0",
   "description": "Engineers and Devices Management System",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "build": "node app.js"
+    "start": "node index.js",
+    "build": "node index.js"
   },
   "author": "Abanoub Ayoub",
   "license": "ISC",
@@ -17,5 +17,8 @@
     "nodemon": "^2.0.7",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6"
+  },
+  "engines": {
+    "node": "12.18.3"
   }
 }
