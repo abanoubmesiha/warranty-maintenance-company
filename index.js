@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 // const swaggerUI = require('swagger-ui-express');
 // const swaggerJsDoc = require('swagger-jsdoc');
 // require('dotenv').config();
@@ -25,14 +25,14 @@ const bodyParser = require('body-parser');
 // const specs = swaggerJsDoc(options)
 
 const app = express();
-app.use(bodyParser.json())
-// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
+// app.use(bodyParser.json())
+// // app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 
-// Import Routes
-const userRoutes = require('./routes/users');
+// // Import Routes
+// const userRoutes = require('./routes/users');
 
-app.use('/users', userRoutes);
+// app.use('/users', userRoutes);
 
 app.use('/', (req, res)=>{
     res.send("Hi there!");
