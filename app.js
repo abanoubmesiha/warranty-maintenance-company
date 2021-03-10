@@ -33,7 +33,7 @@ const userRoutes = require('./routes/users');
 
 app.use('/users', userRoutes);
 
-app.use('/', (res, req)=>{
+app.use('/', (req, res)=>{
     res.send("Hi");
 });
 
