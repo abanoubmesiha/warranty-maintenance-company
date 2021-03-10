@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-require('dotenv').config();
+
+if (process.env.NODE_ENV !== 'production'){
+    require('dotenv').config();
+}
 
 const options = {
     definition: {
