@@ -33,6 +33,10 @@ const userRoutes = require('./routes/users');
 
 app.use('/users', userRoutes);
 
+app.use('/', (res, req)=>{
+    res.send("Hi");
+});
+
 
 // Connect to DB
 mongoose.connect(
