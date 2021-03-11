@@ -15,7 +15,7 @@ const options = {
         servers: [
             {
                 url: "https://warranty-maintenance-company.herokuapp.com/",
-                url: "http://localhost:3000/",
+                url: "http://localhost:3000/"
             }
         ]
     },
