@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 
+let port = process.env.PORT || 4000
 const options = {
     definition: {
         openapi: "3.0.0",
@@ -14,9 +15,11 @@ const options = {
         },
         servers: [
             {
-                url: "https://warranty-maintenance-company.herokuapp.com/",
-                url: "http://localhost:3000/"
-            }
+                url: "https://warranty-maintenance-company.herokuapp.com/"
+            },
+            // {
+            //     url: `http://localhost:${port}/`
+            // },
         ]
     },
     apis: ["./routes/*.js"]
@@ -44,5 +47,4 @@ mongoose.connect(
     ()=>console.log('Connected to DB!')
 )
 
-let port = process.env.PORT || 4000
 app.listen(port, ()=>console.log("Listening to the app on port " + port))
