@@ -1,22 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-// require('dotenv').config();
-
 
 const options = {
     definition: {
         openapi: "3.0.0",
         info: {
             title: "warranty-maintenance-company",
-            description: "Engineers and Devices Management System",
+            description: "Warranty Maintenance Company Management System for Engineers and Devices",
             version: "1.0.0",
         },
         servers: [
             {
-                url: "http://localhost:3000/"
+                // url: "http://localhost:3000/"
+                url: "https://warranty-war.herokuapp.com/"
             }
         ]
     },
@@ -26,8 +25,7 @@ const specs = swaggerJsDoc(options)
 
 const app = express();
 app.use(bodyParser.json())
-// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
-
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 // Import Routes
 const userRoutes = require('./routes/users');
@@ -35,9 +33,8 @@ const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
 
 app.use('/', (req, res)=>{
-    res.send("Hi there from original app!");
+    res.send("Hi there from github!");
 });
-
 
 // Connect to DB
 mongoose.connect(
@@ -47,5 +44,5 @@ mongoose.connect(
     ()=>console.log('Connected to DB!')
 )
 
-let port = process.env.PORT || 3000
+let port = process.env.PORT || 4000
 app.listen(port, ()=>console.log("Listening to the app on port " + port))
