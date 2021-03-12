@@ -1,6 +1,7 @@
-const express = require('express');
+const express = 
+require('express');
 const router = express.Router()
-const User = require('../models/users')
+const User = require('../models/user')
 
 /**
  * @swagger
@@ -37,15 +38,15 @@ const User = require('../models/users')
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: The Users Managing API
+ *   name: User
+ *   description: The User Managing API
  */
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Returns the list of users
- *     tags: [Users]
+ *     tags: [User]
  *     responses: 
  *       200:
  *         description: The list of users
@@ -67,7 +68,7 @@ router.get('/', (req, res)=>{
  * /users:
  *   post:
  *     summary: Create a new user
- *     tags: [Users]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:

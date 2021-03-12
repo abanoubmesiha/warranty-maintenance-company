@@ -33,12 +33,29 @@ app.use(bodyParser.json())
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 // Import Routes
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/user');
+const deviceRoutes = require('./routes/device');
 
 app.use('/users', userRoutes);
+app.use('/devices', deviceRoutes);
 
 app.use('/', (req, res)=>{
     res.send("Hi there from WAR-05!");
+});
+
+app.use((req, res, next)=>{
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+app.use((err, req, res, next)=>{
+    res.status(err.status || 500 );
+    res.json({
+        error: {
+            message: err.message || 'Unexpected Error!'
+        }
+    })
 });
 
 // Connect to DB
