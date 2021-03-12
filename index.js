@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+require('dotenv').config();
 
 let port = process.env.PORT || 4000
+
 const options = {
     definition: {
         openapi: "3.0.0",
@@ -17,9 +19,9 @@ const options = {
             {
                 url: "https://warranty-maintenance-company.herokuapp.com/"
             },
-            // {
-            //     url: `http://localhost:${port}/`
-            // },
+            {
+                url: `http://localhost:${port}/`
+            }
         ]
     },
     apis: ["./routes/*.js"]
@@ -36,13 +38,12 @@ const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
 
 app.use('/', (req, res)=>{
-    res.send("Hi there from github!");
+    res.send("Hi there from WAR-05!");
 });
 
 // Connect to DB
 mongoose.connect(
-    // process.env.DB_CONNECTION || 
-    "mongodb+srv://WAR-OWNER:P@ssw0rdWAR@warranty-maintenance-co.c46g7.mongodb.net/development?retryWrites=true&w=majority",
+    process.env.DB_CONNECTION,
     { useNewUrlParser: true, useUnifiedTopology: true },
     ()=>console.log('Connected to DB!')
 )
