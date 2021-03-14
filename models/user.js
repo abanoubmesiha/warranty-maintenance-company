@@ -1,26 +1,40 @@
-const mongoose = require('mongoose');
+const getDb = require('../util/database').getDb;
+class User {
+  constructor(email, password, role, name, birthdate) {
+    this.email = email;
+    this.password = password;
+    this.role = role;
+    this.name = name;
+    this.birthdate = birthdate;
+  }
 
-const UserSchema = mongoose.Schema({
-    email: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: false
-    },
-    birthdate: {
-        type: Date,
-        required: false
-    }
-});
+  save() {
+    const db = getDb();
+    return db
+      .collection('users')
+      .insertOne(this)
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
-module.exports = mongoose.model('User', UserSchema)
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection('users')
+      .find()
+      .toArray()
+      .then(users => {
+        console.log(users);
+        return users;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+}
+
+module.exports = User;

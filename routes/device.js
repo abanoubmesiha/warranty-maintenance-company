@@ -20,7 +20,7 @@ const User = require('../models/user')
  *           description: The name of the device.               
  *         user:
  *           type: string               
- *           description: The user which this task is assigned to right now.               
+ *           description: User ID which this task is assigned to right now.               
  *         history:
  *           type: string               
  *           description: The List of users who this task is assigned to in the past           
@@ -49,7 +49,7 @@ const User = require('../models/user')
  */
 
 router.get('/', (req, res)=>{
-    Device.find()
+    Device.fetchAll()
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })

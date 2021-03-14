@@ -1,18 +1,29 @@
-const mongoose = require('mongoose');
+const getDb = require('../util/database').getDb;
+class Device {
+  constructor(user, history, name) {
+    this.user = user;
+    this.history = history;
+    this.name = name;
+  }
 
-const DevicesSchema = mongoose.Schema({
-    user: {
-        type: String,
-        required: false
-    },
-    history: {
-        type: [String],
-        required: false
-    },
-    name: {
-        type: String,
-        required: true
-    },
-});
+  save() {
+    const db = getDb();
+    return db
+      .collection('devices')
+      .insertOne(this)
+      .then()
+      .catch(err => {throw `Couldn't fetch devices ${err}`});
+  }
 
-module.exports = mongoose.model('Devices', DevicesSchema)
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection('devices')
+      .find()
+      .toArray()
+      .then(products => products)
+      .catch(err => {throw `Couldn't fetch devices ${err}`});
+  }
+}
+
+module.exports = Device;

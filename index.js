@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 require('dotenv').config();
+
+const mongoConnect = require('./util/database').mongoConnect;
 
 let port = process.env.PORT || 4000
 
@@ -40,7 +41,7 @@ app.use('/users', userRoutes);
 app.use('/devices', deviceRoutes);
 
 app.use('/', (req, res)=>{
-    res.send("Hi there from WAR-05!");
+    res.redirect('/api-docs');
 });
 
 app.use((req, res, next)=>{
@@ -59,10 +60,6 @@ app.use((err, req, res, next)=>{
 });
 
 // Connect to DB
-mongoose.connect(
-    process.env.DB_CONNECTION,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    ()=>console.log('Connected to DB!')
-)
-
-app.listen(port, ()=>console.log("Listening to the app on port " + port))
+mongoConnect(()=>{
+    app.listen(port, ()=>console.log("Listening to the app on port " + port))
+})
