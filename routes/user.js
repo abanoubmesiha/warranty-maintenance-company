@@ -63,7 +63,7 @@ router.get('/', (req, res)=>{
 })
 /**
  * @swagger
- * /users/{userId}:
+ * /users/:userId:
  *   get:
  *     summary: Get all users or a user by ID
  *     tags: [User]

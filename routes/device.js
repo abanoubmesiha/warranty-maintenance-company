@@ -22,7 +22,9 @@ const User = require('../models/user')
  *           type: string               
  *           description: User ID which this task is assigned to right now.               
  *         history:
- *           type: string               
+ *           type: array
+ *           items: 
+ *             type: string
  *           description: The List of users who this task is assigned to in the past           
  */
 /**
@@ -75,10 +77,17 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', (req, res) => {
-    const { name, user, history } = req.body;
-    // const result = User.find({"_id" : ObjectId("604a023feb49870015776940")})
-    // console.log(result);
+router.post('/', async (req, res) => {
+    let { name, user, history } = req.body;
+    // '604a023feb49870015776940'
+    if (user){
+        user = await User.fetchOne(user);
+        if (!user){
+            throw 'Please, add a valid user if present'
+        }
+    } else {
+        user = null
+    }
     const device = new Device({ name, user, history })
     device.save()
     .then(data=>res.json(data))
