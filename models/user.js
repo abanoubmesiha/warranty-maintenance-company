@@ -1,3 +1,4 @@
+const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 class User {
   constructor(email, password, role, name, birthdate) {
@@ -27,13 +28,17 @@ class User {
       .collection('users')
       .find()
       .toArray()
-      .then(users => {
-        console.log(users);
-        return users;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .then(users => users)
+      .catch(err => {throw `Couldn't fetch users. ${err}`});
+  }
+  
+  static fetchOne(userId){
+    const db = getDb();
+    return db.collection('users')
+      .find({ _id: new mongodb.ObjectID(userId) })
+      .next()
+      .then(user => user)
+      .catch(err => {throw `Couldn't fetch the user. ${err}`});
   }
 }
 

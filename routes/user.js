@@ -56,9 +56,38 @@ const User = require('../models/user')
  *               items: 
  *                 $ref: '#/components/schemas/User'      
  */
-
 router.get('/', (req, res)=>{
     User.fetchAll()
+    .then(data=>res.json(data))
+    .catch(err=>res.json(err))
+})
+/**
+ * @swagger
+ * /users/{userId}:
+ *   get:
+ *     summary: Get all users or a user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Object ID of the user to get   
+ *     responses: 
+ *       200:
+ *         description: The list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/User'   
+ */
+
+router.get('/:userId', (req, res)=>{
+    const { userId } = req.params;
+    User.fetchOne(userId)
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })

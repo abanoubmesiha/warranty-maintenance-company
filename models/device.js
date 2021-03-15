@@ -12,7 +12,7 @@ class Device {
       .collection('devices')
       .insertOne(this)
       .then()
-      .catch(err => {throw `Couldn't fetch devices ${err}`});
+      .catch(err => {throw `Couldn't fetch devices. ${err}`});
   }
 
   static fetchAll() {
@@ -22,7 +22,7 @@ class Device {
       .find()
       .toArray()
       .then(products => products)
-      .catch(err => {throw `Couldn't fetch devices ${err}`});
+      .catch(err => {throw `Couldn't fetch devices. ${err}`});
   }
 }
 
