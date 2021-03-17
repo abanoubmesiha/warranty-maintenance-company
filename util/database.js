@@ -4,7 +4,7 @@ const MongoClient = mongodb.MongoClient;
 let _db;
 
 const mongoConnect = cb => {
-    MongoClient.connect(process.env.DB_CONNECTION)
+    MongoClient.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(client=>{
         console.log('Connected to Database!');
         _db = client.db()

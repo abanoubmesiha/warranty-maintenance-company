@@ -1,4 +1,5 @@
 const mongodb = require('mongodb');
+const ObjectId = mongodb.ObjectId;
 const getDb = require('../util/database').getDb;
 class User {
   constructor(email, password, role, name, birthdate) {
@@ -9,7 +10,7 @@ class User {
     this.birthdate = birthdate;
   }
 
-  save() {
+  static save() {
     const db = getDb();
     return db
       .collection('users')
@@ -35,10 +36,21 @@ class User {
   static fetchOne(userId){
     const db = getDb();
     return db.collection('users')
-      .find({ _id: new mongodb.ObjectID(userId) })
+      .find({ _id: new ObjectId(userId) })
       .next()
       .then(user => user)
       .catch(err => {throw `Couldn't fetch the user. ${err}`});
+  }
+
+  static async isValidId(id){
+    let res = false
+    if (ObjectId.isValid(id)){
+      let userFromResponse = await User.fetchOne(id);
+      if (userFromResponse){
+        res = true;
+      }
+    }
+    return res
   }
 }
 

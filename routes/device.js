@@ -1,8 +1,6 @@
 const express = require('express');
-const APIError = require('../error/APIError');
 const router = express.Router()
 const Device = require('../models/device')
-const User = require('../models/user')
 
 /**
  * @swagger
@@ -51,11 +49,7 @@ const User = require('../models/user')
  *                 $ref: '#/components/schemas/Device'      
  */
 
-router.get('/', (req, res)=>{
-    Device.fetchAll()
-    .then(data=>res.json(data))
-    .catch(err=>res.json(err))
-})
+router.get('/', Device.fetchAll)
 /**
  * @swagger
  * /devices:
@@ -78,25 +72,6 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', async (req, res, next) => {
-    let { name, user, history } = req.body;
-    // '604a023feb49870015776940'
-    if (user && user.length === 24){
-        let userFromResponse = await User.fetchOne(user);
-        if (userFromResponse){
-            user = userFromResponse._id;
-        } else {
-            user = null
-            next(APIError.badReq('Please, add a valid user if present'))
-            return;
-        }
-    } else {
-        user = null
-    }
-    const device = new Device(name, user, history);
-    device.save()
-    .then(data=>res.json(data))
-    .catch(err=>res.json(err))
-})
+router.post('/', Device.save)
 
 module.exports = router;
