@@ -1,4 +1,5 @@
 const express = require('express');
+const APIError = require('../error/APIError');
 const router = express.Router()
 const Device = require('../models/device')
 const User = require('../models/user')
@@ -77,18 +78,22 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     let { name, user, history } = req.body;
     // '604a023feb49870015776940'
-    if (user){
-        user = await User.fetchOne(user);
-        if (!user){
-            throw 'Please, add a valid user if present'
+    if (user && user.length === 24){
+        let userFromResponse = await User.fetchOne(user);
+        if (userFromResponse){
+            user = userFromResponse._id;
+        } else {
+            user = null
+            next(APIError.badReq('Please, add a valid user if present'))
+            return;
         }
     } else {
         user = null
     }
-    const device = new Device({ name, user, history })
+    const device = new Device(name, user, history);
     device.save()
     .then(data=>res.json(data))
     .catch(err=>res.json(err))

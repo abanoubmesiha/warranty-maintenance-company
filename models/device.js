@@ -1,6 +1,6 @@
 const getDb = require('../util/database').getDb;
 class Device {
-  constructor(user, history, name) {
+  constructor(name, user, history) {
     this.user = user;
     this.history = history;
     this.name = name;
@@ -11,7 +11,7 @@ class Device {
     return db
       .collection('devices')
       .insertOne(this)
-      .then()
+      .then(res=>res)//.insertedId)
       .catch(err => {throw `Couldn't fetch devices. ${err}`});
   }
 

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const APIErrorHandler = require('./error/APIErrorHandler');
 require('dotenv').config();
 
 const mongoConnect = require('./util/database').mongoConnect;
@@ -44,20 +45,8 @@ app.use('/', (req, res)=>{
     res.redirect('/api-docs');
 });
 
-app.use((req, res, next)=>{
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
 
-app.use((err, req, res, next)=>{
-    res.status(err.status || 500 );
-    res.json({
-        error: {
-            message: err.message || 'Unexpected Error!'
-        }
-    })
-});
+app.use(APIErrorHandler);
 
 // Connect to DB
 mongoConnect(()=>{
