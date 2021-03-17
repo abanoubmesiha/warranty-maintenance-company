@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router()
-const User = require('../models/users')
+const User = require('../models/user')
 
 /**
  * @swagger
@@ -37,15 +37,15 @@ const User = require('../models/users')
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: The Users Managing API
+ *   name: User
+ *   description: The User Managing API
  */
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Returns the list of users
- *     tags: [Users]
+ *     tags: [User]
  *     responses: 
  *       200:
  *         description: The list of users
@@ -56,9 +56,38 @@ const User = require('../models/users')
  *               items: 
  *                 $ref: '#/components/schemas/User'      
  */
-
 router.get('/', (req, res)=>{
-    User.find()
+    User.fetchAll()
+    .then(data=>res.json(data))
+    .catch(err=>res.json(err))
+})
+/**
+ * @swagger
+ * /users/:userId:
+ *   get:
+ *     summary: Get all users or a user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Object ID of the user to get   
+ *     responses: 
+ *       200:
+ *         description: The list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/User'   
+ */
+
+router.get('/:userId', (req, res)=>{
+    const { userId } = req.params;
+    User.fetchOne(userId)
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })
@@ -67,7 +96,7 @@ router.get('/', (req, res)=>{
  * /users:
  *   post:
  *     summary: Create a new user
- *     tags: [Users]
+ *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:

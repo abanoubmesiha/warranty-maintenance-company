@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const APIErrorHandler = require('./error/APIErrorHandler');
 require('dotenv').config();
+
+const mongoConnect = require('./util/database').mongoConnect;
 
 let port = process.env.PORT || 4000
 
@@ -33,19 +35,20 @@ app.use(bodyParser.json())
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 // Import Routes
-const userRoutes = require('./routes/users');
+const userRoutes = require('./routes/user');
+const deviceRoutes = require('./routes/device');
 
 app.use('/users', userRoutes);
+app.use('/devices', deviceRoutes);
 
 app.use('/', (req, res)=>{
-    res.send("Hi there from WAR-05!");
+    res.redirect('/api-docs');
 });
 
-// Connect to DB
-mongoose.connect(
-    process.env.DB_CONNECTION,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    ()=>console.log('Connected to DB!')
-)
 
-app.listen(port, ()=>console.log("Listening to the app on port " + port))
+app.use(APIErrorHandler);
+
+// Connect to DB
+mongoConnect(()=>{
+    app.listen(port, ()=>console.log("Listening to the app on port " + port))
+})
