@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const APIErrorHandler = require('./error/APIErrorHandler');
+const APIError = require('./models/api-error');
 require('dotenv').config();
 
-const mongoConnect = require('./util/database').mongoConnect;
+const DbConnect = require('./util/database').DbConnect;
 
 let port = process.env.PORT || 4000
 
@@ -46,9 +46,9 @@ app.use('/', (req, res)=>{
 });
 
 
-app.use(APIErrorHandler);
+app.use(APIError.middleware);
 
 // Connect to DB
-mongoConnect(()=>{
+DbConnect(()=>{
     app.listen(port, ()=>console.log("Listening to the app on port " + port))
 })

@@ -1,40 +1,35 @@
-const getDb = require('../util/database').getDb;
-const APIError = require('../error/APIError');
-const User = require('../models/user')
-class Device {
-  constructor(name, user, history) {
-    this.user = user;
-    this.history = history;
-    this.name = name;
-  }
-  
-  static async save(req, res, next) {
-    let { name, user, history } = req.body;
-    let allUsers = [user, ...history];
-    for (const userId of allUsers){
-      if (!await User.isValidId(userId)){
-        next(APIError.badReq('Please, add a valid user if present'))
-        return;
-      }
-    }
-    const device = new Device(name, user, history);
-    const db = getDb();
-    return db
-      .collection('devices')
-      .insertOne(device)
-      .then(data=>res.json(data.insertedId))
-      .catch(()=>next(APIError.internal(`Couldn't Add a Device`)));
-  }
+const mongoose = require('mongoose');
+const {Schema, model} = mongoose;
+const User = require('./user');
 
-  static fetchAll(req, res, next) {
-    const db = getDb();
-    return db
-      .collection('devices')
-      .find()
-      .toArray()
-      .then(products => res.json(products))
-      .catch(() =>next(APIError.internal(`Couldn't fetch devices.`)));
-  }
-}
+const DeviceSchema = Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    validate: {
+      validator: userId => User.findById(userId),
+      message: `This User isn't present in the database`
+    },
+    required: false
+  },
+  history: {
+    type: [Schema.Types.ObjectId],
+    validate: {
+      validator: async usersIds => {
+        const promises = [];
+        for (const userId of usersIds){
+          let res = await User.findById(userId).then(data=>data)
+          promises.push(res);
+        }
+        return !promises.includes(null)
+      },
+      message: `One of the users in history isn't present in the database`
+    },
+    required: false
+  },
+});
 
-module.exports = Device;
+module.exports = model('Device', DeviceSchema)
