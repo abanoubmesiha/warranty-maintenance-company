@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const APIErrorHandler = require('./error/APIErrorHandler');
+const APIError = require('./models/api-error');
 require('dotenv').config();
 
 const DbConnect = require('./util/database').DbConnect;
@@ -46,7 +46,7 @@ app.use('/', (req, res)=>{
 });
 
 
-app.use(APIErrorHandler);
+app.use(APIError.middleware);
 
 // Connect to DB
 DbConnect(()=>{

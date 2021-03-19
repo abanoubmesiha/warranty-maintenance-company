@@ -57,7 +57,7 @@ const User = require('../models/user')
  *                 $ref: '#/components/schemas/User'      
  */
 router.get('/', (req, res)=>{
-    User.fetchAll()
+    User.find()
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })
@@ -87,7 +87,7 @@ router.get('/', (req, res)=>{
 
 router.get('/:userId', (req, res)=>{
     const { userId } = req.params;
-    User.fetchOne(userId)
+    User.find()
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })

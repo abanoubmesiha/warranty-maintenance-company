@@ -49,7 +49,11 @@ const Device = require('../models/device')
  *                 $ref: '#/components/schemas/Device'      
  */
 
-router.get('/', Device.fetchAll)
+router.get('/', (req, res)=>{
+    Device.find()
+    .then(data=>res.json(data))
+    .catch(err=>res.json(err))
+})
 /**
  * @swagger
  * /devices:
@@ -72,6 +76,12 @@ router.get('/', Device.fetchAll)
  *       500:
  *         description: Some server error.
  */
-router.post('/', Device.save)
+router.post('/', (req, res)=>{
+    const { name, user, history } = req.body
+    const device = new Device({ name, user, history })
+    device.save()
+    .then(data=>res.json(data))
+    .catch(err=>res.json(err))
+})
 
 module.exports = router;
