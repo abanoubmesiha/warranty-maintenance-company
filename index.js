@@ -5,7 +5,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const APIErrorHandler = require('./error/APIErrorHandler');
 require('dotenv').config();
 
-const mongoConnect = require('./util/database').mongoConnect;
+const DbConnect = require('./util/database').DbConnect;
 
 let port = process.env.PORT || 4000
 
@@ -49,6 +49,6 @@ app.use('/', (req, res)=>{
 app.use(APIErrorHandler);
 
 // Connect to DB
-mongoConnect(()=>{
+DbConnect(()=>{
     app.listen(port, ()=>console.log("Listening to the app on port " + port))
 })
