@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 class APIError {
     constructor(code, message){
         this.code = code;
@@ -15,6 +17,10 @@ class APIError {
     static middleware(err, req, res, next){
         if (err instanceof APIError){
             res.status(err.code).json(err.message);
+            return;
+        }
+        if (err instanceof mongoose.Error){
+            res.status(400).json(err.message);
             return;
         }
         

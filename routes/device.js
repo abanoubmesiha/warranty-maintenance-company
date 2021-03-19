@@ -76,12 +76,12 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', (req, res)=>{
-    const { name, user, history } = req.body
-    const device = new Device({ name, user, history })
+router.post('/', (req, res, next)=>{
+    const { name, userId, history } = req.body
+    const device = new Device({ name, userId, history })
     device.save()
     .then(data=>res.json(data))
-    .catch(err=>res.json(err))
+    .catch(err=>next(err))
 })
 
 module.exports = router;

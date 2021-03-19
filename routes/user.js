@@ -87,7 +87,7 @@ router.get('/', (req, res)=>{
 
 router.get('/:userId', (req, res)=>{
     const { userId } = req.params;
-    User.find()
+    User.findById(userId)
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })
