@@ -3,11 +3,20 @@ const app = require('../app')
 const Device = require('../models/device');
 const User = require('../models/user');
 
-describe('GET Endpoints', () => {
-  it('should fetch all devices', async () => {
-    const res = await request(app).get('/devices')
-    console.log(res)
+describe('/devices - GET API Endpoints', () => {
+  it('should fetch devices with 200 status', async () => {
+    const res = await request('http://localhost:4000').get('/devices')
     expect(res.statusCode).toEqual(200)
+  })
+  
+  it('should return array', async () => {
+    const res = await request('http://localhost:4000').get('/devices')
+    expect(Array.isArray(res.body)).toEqual(true)
+  })
+
+  it('should return array that is not empty', async () => {
+    const res = await request('http://localhost:4000').get('/devices')
+    expect(res.body.length).toBeGreaterThan(0)
   })
 })
 
