@@ -1,42 +1,37 @@
 const request = require('supertest')
-const app = require('../app')
-const Device = require('../models/device');
-const User = require('../models/user');
 
 describe('/devices - GET API Endpoints', () => {
-  it('should fetch devices with 200 status', async () => {
-    const res = await request('http://localhost:4000').get('/devices')
+  let res;
+  beforeEach(async ()=>{
+    res = await request('http://localhost:4000').get('/devices')
+  })
+  it('should fetch devices with 200 status', () => {
     expect(res.statusCode).toEqual(200)
   })
   
-  it('should return array', async () => {
-    const res = await request('http://localhost:4000').get('/devices')
+  it('should return array', () => {
     expect(Array.isArray(res.body)).toEqual(true)
-  })
-
-  it('should return array that is not empty', async () => {
-    const res = await request('http://localhost:4000').get('/devices')
-    expect(res.body.length).toBeGreaterThan(0)
   })
 })
 
-// describe('Post Endpoints', () => {
-//   let correctDevice;
-//   beforeEach = async () => {
-//       await Device.deleteMany({});
-//       let userId = (await User.findOne())._id
-//       correctDevice = {
-//         name: 'test',
-//         userId,
-//         history: [userId]
-//       }
-//   }
-//   it('should create a new device', async () => {
-//     const res = await request(app)
-//       .post('/devices')
-//       .send(correctDevice)
-//     console.log(res);
-//     expect(res.statusCode).toEqual(200)
-//     expect(res.body).toHaveProperty('post')
-//   })
-// })
+describe('Post Endpoints', () => {
+  it('should create a new device', async () => {
+    const fetchUsers = await request('http://localhost:4000').get('/users')
+    const userId = fetchUsers.body[0]._id
+    const correctDevice = {
+      "name": "test",
+      "userId": userId,
+      "history": [userId]
+    }
+
+    const res = await request('http://localhost:4000')
+      .post('/devices')
+      .send(correctDevice)
+    
+    expect(res.statusCode).toEqual(200)
+    expect(res.body.name).toEqual(correctDevice.name)
+    expect(res.body.userId).toEqual(correctDevice.userId)
+    expect(res.body.history).toEqual(correctDevice.history)
+    expect(Boolean(res.body._id)).toBeTruthy()
+  })
+})
