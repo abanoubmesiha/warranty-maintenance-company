@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Joi = require('joi')
 class APIError {
     constructor(code, message){
         this.code = code;
@@ -21,6 +21,11 @@ class APIError {
         }
         if (err instanceof mongoose.Error){
             res.status(400).json(err.message);
+            return;
+        }
+        if (err.isJoi){
+            const messages = err.details.map(detail=>detail.message).join()
+            res.status(422).json(messages);
             return;
         }
         

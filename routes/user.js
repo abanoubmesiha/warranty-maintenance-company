@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
+const JoiSchema = require('../util/schemas/user')
 
 /**
  * @swagger
@@ -113,12 +114,16 @@ router.get('/:userId', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', (req, res) => {
-    const { email, password, role, name, birthdate } = req.body
-    const user = new User({ email, password, role, name, birthdate })
-    user.save()
-    .then(data=>res.json(data))
-    .catch(err=>res.json(err))
+router.post('/', async (req, res, next) => {
+    JoiSchema.validateAsync(req.body)
+    .then(validationRes=>{
+        const user = new User(validationRes)
+        user.save()
+        .then(data=>res.json(data))
+        .catch(err=>next(err))
+    })
+    .catch(err=>next(err))
+ 
 })
 
 module.exports = router;
