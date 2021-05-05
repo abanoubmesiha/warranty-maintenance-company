@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router()
 const Device = require('../models/device')
 const JoiSchema = require('../util/schemas/device')
+const verifyLogin = require('../util/verifyLogin')
 
 /**
  * @swagger
@@ -25,7 +26,12 @@ const JoiSchema = require('../util/schemas/device')
  *           type: array
  *           items: 
  *             type: string
- *           description: The List of users who this task is assigned to in the past           
+ *           description: The List of users who this task is assigned to in the past 
+ *     securitySchemes:
+ *       JWT:     
+ *         type: apiKey
+ *         scheme: Authorization
+ *         in: header           
  */
 /**
  * @swagger
@@ -59,6 +65,8 @@ router.get('/', (req, res)=>{
  * @swagger
  * /devices:
  *   post:
+ *     security:
+ *       - JWT: [] 
  *     summary: Create a new device
  *     tags: [Device]
  *     requestBody:
@@ -77,7 +85,7 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', async (req, res, next)=>{
+router.post('/', verifyLogin, async (req, res, next)=>{
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{
         const device = new Device(validationRes)

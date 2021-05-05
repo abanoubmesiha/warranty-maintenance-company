@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
 const JoiSchema = require('../util/schemas/user')
+const verifyLogin = require('../util/verifyLogin')
 
 /**
  * @swagger
@@ -34,6 +35,11 @@ const JoiSchema = require('../util/schemas/user')
  *         birthdate:
  *           type: Date               
  *           description: birthdate of user.               
+ *     securitySchemes:
+ *       JWT:     
+ *         type: apiKey
+ *         scheme: Authorization
+ *         in: header 
  */
 /**
  * @swagger
@@ -96,6 +102,8 @@ router.get('/:userId', (req, res)=>{
  * @swagger
  * /users:
  *   post:
+ *     security:
+ *       - JWT: [] 
  *     summary: Create a new user
  *     tags: [User]
  *     requestBody:
@@ -114,7 +122,7 @@ router.get('/:userId', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', async (req, res, next) => {
+router.post('/', verifyLogin,async (req, res, next) => {
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{
         const user = new User(validationRes)
