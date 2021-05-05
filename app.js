@@ -33,9 +33,11 @@ app.use(bodyParser.json())
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs))
 
 // Import Routes
+const loginRoute = require('./routes/login');
 const userRoutes = require('./routes/user');
 const deviceRoutes = require('./routes/device');
 
+app.use('/login', loginRoute);
 app.use('/users', userRoutes);
 app.use('/devices', deviceRoutes);
 
