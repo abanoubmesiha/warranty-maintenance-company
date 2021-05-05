@@ -6,6 +6,10 @@ class APIError {
         this.message = message;
     }
 
+    static unauthorized(){
+        return new APIError(401, 'Unauthorized!')
+    }
+
     static badReq(msg){
         return new APIError(400, msg)
     }

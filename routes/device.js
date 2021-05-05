@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router()
 const Device = require('../models/device')
 const JoiSchema = require('../util/schemas/device')
+const verifyLogin = require('../util/verifyLogin')
 
 /**
  * @swagger
@@ -77,7 +78,7 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', async (req, res, next)=>{
+router.post('/', verifyLogin, async (req, res, next)=>{
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{
         const device = new Device(validationRes)
