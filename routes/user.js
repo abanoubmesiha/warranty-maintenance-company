@@ -35,6 +35,11 @@ const verifyLogin = require('../util/verifyLogin')
  *         birthdate:
  *           type: Date               
  *           description: birthdate of user.               
+ *     securitySchemes:
+ *       JWT:     
+ *         type: apiKey
+ *         scheme: Authorization
+ *         in: header 
  */
 /**
  * @swagger
@@ -97,6 +102,8 @@ router.get('/:userId', (req, res)=>{
  * @swagger
  * /users:
  *   post:
+ *     security:
+ *       - JWT: [] 
  *     summary: Create a new user
  *     tags: [User]
  *     requestBody:
