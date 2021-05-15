@@ -106,6 +106,9 @@ router.get('/:userId', (req, res)=>{
  *       - JWT: [] 
  *     summary: Create a new user
  *     tags: [User]
+ *     parameters:
+ *     - in: header
+ *       name: auth-token
  *     requestBody:
  *       required: true
  *       content:

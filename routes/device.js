@@ -69,6 +69,9 @@ router.get('/', (req, res)=>{
  *       - JWT: [] 
  *     summary: Create a new device
  *     tags: [Device]
+ *     parameters:
+ *     - in: header
+ *       name: auth-token
  *     requestBody:
  *       required: true
  *       content:
