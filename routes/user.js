@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
 const JoiSchema = require('../util/schemas/user')
+const passwordJoiSchema = require('../util/schemas/password')
 const verifyLogin = require('../util/verifyLogin')
+const APIError = require('../models/api-error');
+const bcrypt = require('bcrypt');
+const hashPassword = require('../util/schemas/hash-password');
 
 /**
  * @swagger
@@ -44,15 +48,14 @@ const verifyLogin = require('../util/verifyLogin')
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: The User Managing API
+ *   name: Users
  */
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Returns the list of users
- *     tags: [User]
+ *     tags: [Users]
  *     responses: 
  *       200:
  *         description: The list of users
@@ -73,7 +76,7 @@ router.get('/', (req, res)=>{
  * /users/:userId:
  *   get:
  *     summary: Get all users or a user by ID
- *     tags: [User]
+ *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: userId
@@ -105,7 +108,7 @@ router.get('/:userId', (req, res)=>{
  *     security:
  *       - JWT: [] 
  *     summary: Create a new user
- *     tags: [User]
+ *     tags: [Users]
  *     parameters:
  *     - in: header
  *       name: auth-token
@@ -135,6 +138,66 @@ router.post('/', verifyLogin,async (req, res, next) => {
     })
     .catch(err=>next(err))
  
+})
+/**
+ * @swagger
+ *
+ * users/change-password:
+ *   post:
+ *     summary: Change password of logged in user
+ *     tags: [Users]
+ *     parameters:
+ *     - in: header
+ *       name: auth-token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties: 
+ *               oldPassword: 
+ *                 type: string       
+ *               newPassword: 
+ *                 type: string       
+ *             required:
+ *             - oldPassword
+ *             - newPassword
+ *     responses: 
+ *       200:
+ *         description: The password is successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Device'      
+ *       500:
+ *         description: Some server error.
+ */
+ router.post('/change-password', verifyLogin, async (req, res, next) => {
+    try {
+        const {oldPassword, newPassword} = await passwordJoiSchema.validateAsync(req.body)
+        
+        const user = await User.findOne({_id: req.user})
+        if (!user) {
+            next(APIError.badReq("Logged in User data is not found, the user might be deleted after being used for logging in"))
+            return;
+        }
+
+        const validPass = await bcrypt.compare(oldPassword, user.password)
+        if (!validPass) {
+            next(APIError.badReq("Password is wrong"))
+            return;
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        User.findOneAndUpdate({_id: user._id}, {password: hashedPassword})
+        .then(data=>res.json(data))
+        .catch(err=>next(err))
+
+    } catch (err) {
+        next(err)
+    }
 })
 
 module.exports = router;

@@ -36,15 +36,14 @@ const verifyLogin = require('../util/verifyLogin')
 /**
  * @swagger
  * tags:
- *   name: Device
- *   description: The Device Managing API
+ *   name: Devices
  */
 /**
  * @swagger
  * /devices:
  *   get:
  *     summary: Returns the list of devices
- *     tags: [Device]
+ *     tags: [Devices]
  *     responses: 
  *       200:
  *         description: The list of devices
@@ -68,7 +67,7 @@ router.get('/', (req, res)=>{
  *     security:
  *       - JWT: [] 
  *     summary: Create a new device
- *     tags: [Device]
+ *     tags: [Devices]
  *     parameters:
  *     - in: header
  *       name: auth-token

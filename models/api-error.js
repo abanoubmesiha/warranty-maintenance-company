@@ -32,6 +32,10 @@ class APIError {
             res.status(422).json(messages);
             return;
         }
+        if (err.status && err.type.match(/parse/gi)){
+            res.status(err.status).json("Parse Error! Check the JSON object you sent, please!");
+            return;
+        }
         
         res.status(500).json('Something went wrong!');
     }
