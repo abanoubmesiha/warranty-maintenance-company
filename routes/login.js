@@ -5,7 +5,48 @@ const User = require('../models/user')
 const JoiSchema = require('../util/schemas/login')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Login:
+ *       type: object
+ *       required:
+ *         - email    
+ *         - password   
+ *       properties:
+ *         email:
+ *           type: string               
+ *         password:
+ *           type: string               
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: Auth Routes
+ */
+/**
+ * @swagger
+ *
+ * /login:
+ *   post:
+ *     tags: [Auth Routes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             $ref: '#/components/schemas/Login'   
+ *     responses: 
+ *       200:
+ *         description: The auth-token was successfully generated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Device'      
+ *       500:
+ *         description: Some server error.
+ */
 router.post('/', async (req, res, next) => {
     try {
         const {email, password} = await JoiSchema.validateAsync(req.body)
