@@ -28,11 +28,6 @@ const { VerifyTypes } = require('../util/types/verify-types')
  *           items: 
  *             type: string
  *           description: The List of users who this task is assigned to in the past 
- *     securitySchemes:
- *       JWT:     
- *         type: apiKey
- *         scheme: Authorization
- *         in: header           
  */
 /**
  * @swagger
@@ -65,8 +60,6 @@ router.get('/', (req, res)=>{
  * @swagger
  * /devices:
  *   post:
- *     security:
- *       - JWT: [] 
  *     summary: Create a new device
  *     tags: [Devices]
  *     parameters:

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
-const hashPassword = require('../util/schemas/hash-password');
+const hashPassword = require('../util/hash-password');
 
 const UserSchema = Schema({
     email: {
