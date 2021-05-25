@@ -60,7 +60,9 @@ const hashPassword = require('../util/hash-password');
  *             schema:
  *               type: array
  *               items: 
- *                 $ref: '#/components/schemas/User'      
+ *                 $ref: '#/components/schemas/User'        
+ *       500:
+ *         description: Some server error.   
  */
 router.get('/', (req, res)=>{
     User.find()
@@ -89,7 +91,9 @@ router.get('/', (req, res)=>{
  *             schema:
  *               type: array
  *               items: 
- *                 $ref: '#/components/schemas/User'   
+ *                 $ref: '#/components/schemas/User'        
+ *       500:
+ *         description: Some server error.
  *   put:
  *     summary: Update a user
  *     tags: [Users]
@@ -114,7 +118,30 @@ router.get('/', (req, res)=>{
  *             schema:
  *               type: array
  *               items: 
- *                 $ref: '#/components/schemas/User'   
+ *                 $ref: '#/components/schemas/User'        
+ *       500:
+ *         description: Some server error.
+ *   delete:
+ *     summary: Delete a user
+ *     tags: [Users]
+ *     parameters:
+ *       - in: header
+ *         name: auth-token
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: Object ID of the user to update  
+ *     responses: 
+ *       200:
+ *         description: User is deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/User'        
+ *       500:
+ *         description: Some server error.
  */
 router.get('/:userId', (req, res)=>{
     const { userId } = req.params;
@@ -133,6 +160,15 @@ router.put('/:userId',
         .then(async data=>res.json(await User.findById(data._id)))
         .catch(err=>next(err))
     })
+    .catch(err=>next(err))
+})
+
+router.delete('/:userId',
+    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => {
+    const { userId } = req.params;
+    User.findByIdAndDelete(userId)
+    .then(data=>res.json(data))
     .catch(err=>next(err))
 })
 
