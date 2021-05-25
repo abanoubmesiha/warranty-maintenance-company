@@ -20,7 +20,7 @@ module.exports = async function(requiredRoleName, req, res, next){
         try {
             const verified = jwt.verify(token, process.env.TOKEN_SECRET)
             req.user = verified;
-            if (requiredRoleName === VerifyTypes.Login){
+            if (requiredRoleName === VerifyTypes.LoggedIn){
                 next()
             } else {
                 const user = await User.findById(verified)

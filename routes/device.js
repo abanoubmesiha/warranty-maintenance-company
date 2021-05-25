@@ -89,7 +89,7 @@ router.get('/', (req, res)=>{
  *         description: Some server error.
  */
 router.post('/',
-    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => await verify(VerifyTypes.Maintainer, req, res, next),
     async (req, res, next)=>{
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{

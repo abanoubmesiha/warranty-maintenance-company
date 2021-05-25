@@ -1,5 +1,5 @@
 const VerifyTypes = {
-    Login: 'Login',
+    LoggedIn: 'LoggedIn',
     Admin: 'Admin',
     Maintainer: 'Maintainer',
 }
