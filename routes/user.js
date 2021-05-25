@@ -40,11 +40,6 @@ const hashPassword = require('../util/schemas/hash-password');
  *         birthdate:
  *           type: Date               
  *           description: birthdate of user.               
- *     securitySchemes:
- *       JWT:     
- *         type: apiKey
- *         scheme: Authorization
- *         in: header 
  */
 /**
  * @swagger
@@ -72,9 +67,10 @@ router.get('/', (req, res)=>{
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })
+
 /**
  * @swagger
- * /users/:userId:
+ * /users/{userId}:
  *   get:
  *     summary: Get all users or a user by ID
  *     tags: [Users]
@@ -95,19 +91,17 @@ router.get('/', (req, res)=>{
  *               items: 
  *                 $ref: '#/components/schemas/User'   
  */
-
 router.get('/:userId', (req, res)=>{
     const { userId } = req.params;
     User.findById(userId)
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
 })
+
 /**
  * @swagger
  * /users:
  *   post:
- *     security:
- *       - JWT: [] 
  *     summary: Create a new user
  *     tags: [Users]
  *     parameters:
@@ -141,9 +135,9 @@ router.post('/',
     })
     .catch(err=>next(err))
 })
+
 /**
  * @swagger
- *
  * users/change-password:
  *   post:
  *     summary: Change password of logged in user
@@ -175,7 +169,9 @@ router.post('/',
  *       500:
  *         description: Some server error.
  */
- router.post('/change-password', verify, async (req, res, next) => {
+ router.post('/change-password',
+    async (req, res, next) => await verify(VerifyTypes.LoggedIn, req, res, next),
+    async (req, res, next) => {
     try {
         const {oldPassword, newPassword} = await passwordJoiSchema.validateAsync(req.body)
         
@@ -200,6 +196,39 @@ router.post('/',
     } catch (err) {
         next(err)
     }
+})
+
+/**
+ * @swagger
+ * /users/userId:
+ *   put:
+ *     summary: Update a user
+ *     tags: [Users]
+ *     parameters:
+ *     - in: header
+ *       name: auth-token
+ *     - in: path
+ *       name: userId
+ *         required: false
+ *         description: Object ID of the user to update  
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             $ref: '#/components/schemas/User'   
+ */
+router.put('/',
+    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => {
+    JoiSchema.validateAsync(req.body)
+    .then(validationRes=>{
+        const { userId } = req.params;
+        User.findOneAndUpdate({ '_id': userId }, validationRes)
+        .then(data=>res.json(data))
+        .catch(err=>next(err))
+    })
+    .catch(err=>next(err))
 })
 
 module.exports = router;
