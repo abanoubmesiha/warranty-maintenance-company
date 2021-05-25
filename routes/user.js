@@ -3,7 +3,8 @@ const router = express.Router()
 const User = require('../models/user')
 const JoiSchema = require('../util/schemas/user')
 const passwordJoiSchema = require('../util/schemas/password')
-const verifyLogin = require('../util/verifyLogin')
+const verify = require('../util/verify')
+const { VerifyTypes } = require('../util/types/verify-types')
 const APIError = require('../models/api-error');
 const bcrypt = require('bcrypt');
 const hashPassword = require('../util/schemas/hash-password');
@@ -128,7 +129,9 @@ router.get('/:userId', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/', verifyLogin,async (req, res, next) => {
+router.post('/',
+    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => {
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{
         const user = new User(validationRes)
@@ -137,7 +140,6 @@ router.post('/', verifyLogin,async (req, res, next) => {
         .catch(err=>next(err))
     })
     .catch(err=>next(err))
- 
 })
 /**
  * @swagger
@@ -173,7 +175,7 @@ router.post('/', verifyLogin,async (req, res, next) => {
  *       500:
  *         description: Some server error.
  */
- router.post('/change-password', verifyLogin, async (req, res, next) => {
+ router.post('/change-password', verify, async (req, res, next) => {
     try {
         const {oldPassword, newPassword} = await passwordJoiSchema.validateAsync(req.body)
         

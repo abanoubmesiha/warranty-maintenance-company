@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const { Schema } = require('mongoose');
 const hashPassword = require('../util/schemas/hash-password');
 
-const UserSchema = mongoose.Schema({
+const UserSchema = Schema({
     email: {
         type: String,
         required: true
@@ -10,8 +11,8 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    role: {
-        type: String,
+    roleId: {
+        type: Schema.Types.ObjectId,
         required: true
     },
     name: {
