@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router()
 const User = require('../models/user')
-const JoiSchema = require('../util/schemas/user')
+const { AddUserSchema, UpdateUserSchema } = require('../util/schemas/user')
 const passwordJoiSchema = require('../util/schemas/password')
 const verify = require('../util/verify')
 const { VerifyTypes } = require('../util/types/verify-types')
 const APIError = require('../models/api-error');
 const bcrypt = require('bcrypt');
-const hashPassword = require('../util/schemas/hash-password');
+const hashPassword = require('../util/hash-password');
 
 /**
  * @swagger
@@ -90,12 +90,50 @@ router.get('/', (req, res)=>{
  *               type: array
  *               items: 
  *                 $ref: '#/components/schemas/User'   
+ *   put:
+ *     summary: Update a user
+ *     tags: [Users]
+ *     parameters:
+ *       - in: header
+ *         name: auth-token
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: Object ID of the user to update  
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             $ref: '#/components/schemas/User'   
+ *     responses: 
+ *       200:
+ *         description: User is updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/User'   
  */
 router.get('/:userId', (req, res)=>{
     const { userId } = req.params;
     User.findById(userId)
     .then(data=>res.json(data))
     .catch(err=>res.json(err))
+})
+
+router.put('/:userId',
+    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => {
+    UpdateUserSchema.validateAsync(req.body)
+    .then(validationRes=>{
+        const { userId } = req.params;
+        User.findOneAndUpdate({ '_id': userId }, validationRes)
+        .then(async data=>res.json(await User.findById(data._id)))
+        .catch(err=>next(err))
+    })
+    .catch(err=>next(err))
 })
 
 /**
@@ -126,7 +164,7 @@ router.get('/:userId', (req, res)=>{
 router.post('/',
     async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
     async (req, res, next) => {
-    JoiSchema.validateAsync(req.body)
+    AddUserSchema.validateAsync(req.body)
     .then(validationRes=>{
         const user = new User(validationRes)
         user.save()
@@ -196,39 +234,6 @@ router.post('/',
     } catch (err) {
         next(err)
     }
-})
-
-/**
- * @swagger
- * /users/userId:
- *   put:
- *     summary: Update a user
- *     tags: [Users]
- *     parameters:
- *     - in: header
- *       name: auth-token
- *     - in: path
- *       name: userId
- *         required: false
- *         description: Object ID of the user to update  
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: 
- *             $ref: '#/components/schemas/User'   
- */
-router.put('/',
-    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
-    async (req, res, next) => {
-    JoiSchema.validateAsync(req.body)
-    .then(validationRes=>{
-        const { userId } = req.params;
-        User.findOneAndUpdate({ '_id': userId }, validationRes)
-        .then(data=>res.json(data))
-        .catch(err=>next(err))
-    })
-    .catch(err=>next(err))
 })
 
 module.exports = router;
