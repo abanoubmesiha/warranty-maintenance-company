@@ -1,9 +1,9 @@
-const VerifyTypes = {
-    LoggedIn: 'LoggedIn',
+const RolesTypes = {
+    User: 'User',
     Admin: 'Admin',
     Maintainer: 'Maintainer',
 }
 
 module.exports = {
-    VerifyTypes
+    RolesTypes
 }

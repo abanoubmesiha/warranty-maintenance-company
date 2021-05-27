@@ -4,7 +4,7 @@ const User = require('../models/user')
 const { AddUserSchema, UpdateUserSchema } = require('../util/schemas/user')
 const passwordJoiSchema = require('../util/schemas/password')
 const verify = require('../util/verify')
-const { VerifyTypes } = require('../util/types/verify-types')
+const { RolesTypes } = require('../util/types/verify-types')
 const APIError = require('../models/api-error');
 const bcrypt = require('bcrypt');
 const hashPassword = require('../util/hash-password');
@@ -18,7 +18,7 @@ const hashPassword = require('../util/hash-password');
  *       required:
  *         - email    
  *         - password    
- *         - role
+ *         - roleId
  *       properties:
  *         _id:
  *           type: ObjectId               
@@ -29,8 +29,8 @@ const hashPassword = require('../util/hash-password');
  *         password:
  *           type: string               
  *           description: We should store hashed passwords in the future.               
- *         role:
- *           type: string               
+ *         roleId:
+ *           type: ObjectId               
  *           description: |
  *             The responsability of the user, a user can be an Admin or a Maintainer
  *             which will give the user more or less permissions in controlling of other users or devices
@@ -151,7 +151,7 @@ router.get('/:userId', (req, res)=>{
 })
 
 router.put('/:userId',
-    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
     async (req, res, next) => {
     UpdateUserSchema.validateAsync(req.body)
     .then(validationRes=>{
@@ -164,7 +164,7 @@ router.put('/:userId',
 })
 
 router.delete('/:userId',
-    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
     async (req, res, next) => {
     const { userId } = req.params;
     User.findByIdAndDelete(userId)
@@ -198,7 +198,7 @@ router.delete('/:userId',
  *         description: Some server error.
  */
 router.post('/',
-    async (req, res, next) => await verify(VerifyTypes.Admin, req, res, next),
+    async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
     async (req, res, next) => {
     AddUserSchema.validateAsync(req.body)
     .then(validationRes=>{
@@ -212,7 +212,7 @@ router.post('/',
 
 /**
  * @swagger
- * users/change-password:
+ * /users/change-password:
  *   post:
  *     summary: Change password of logged in user
  *     tags: [Users]
@@ -244,7 +244,7 @@ router.post('/',
  *         description: Some server error.
  */
  router.post('/change-password',
-    async (req, res, next) => await verify(VerifyTypes.LoggedIn, req, res, next),
+    async (req, res, next) => await verify(RolesTypes.User, req, res, next),
     async (req, res, next) => {
     try {
         const {oldPassword, newPassword} = await passwordJoiSchema.validateAsync(req.body)
