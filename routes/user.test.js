@@ -1,6 +1,6 @@
 const request = require('supertest')
-const { AddUserSchema } = require('../util/schemas/user')
-
+const loginWith = require('../util/tests/login')
+const { RolesTypes } = require('../util/types/verify-types')
 
 describe('Users Routes', () => {
   
@@ -32,12 +32,17 @@ describe('Users Routes', () => {
         name,
         birthdate: new Date()
       }      
+
+      const token = await loginWith(RolesTypes.Admin)
+      
       const res = await request('http://localhost:4000')
         .post('/users')
+        .set({'auth-token': token})
         .send(user)
-      // expect(res.statusCode).toEqual(200)
-      // expect(Array.isArray(res.body)).toEqual(true)
-      console.log(res.body)
+      expect(res.statusCode).toEqual(200)
+      expect(res.body.name).toEqual(name)
+      expect(res.body.email).toEqual(user.email + 12)
+      expect(res.body.roleId).toEqual(user.roleId)
     })
       
   })
