@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const APIError = require('../models/api-error');
-const { RolesTypes } = require('./types/verify-types');
+const { RolesTypes } = require('./types/roles-types');
 const User = require('../models/user')
 const Role = require('../models/role')
 

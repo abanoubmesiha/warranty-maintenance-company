@@ -1,6 +1,7 @@
 const request = require('supertest')
+const user = require('../models/user')
 const loginWith = require('../util/tests/login')
-const { RolesTypes } = require('../util/types/verify-types')
+const { RolesTypes } = require('../util/types/roles-types')
 
 describe('Users Routes', () => {
   
@@ -8,11 +9,20 @@ describe('Users Routes', () => {
 
     it('GET: fetch an array of users', async () => {
       const res = await request('http://localhost:4000')
-        .get('/users')
+      .get('/users')
       expect(res.statusCode).toEqual(200)
       expect(Array.isArray(res.body)).toEqual(true)
     })
-      
+    
+    it('Check for TEST USERS FOR ALL ROLES', async () => {
+      const res = await request('http://localhost:4000')
+        .get('/users')
+      const emails = res.body.map(user => user.email)
+      expect(emails.includes(`${RolesTypes.Admin}@test.com`.toLowerCase())).toEqual(true)
+      expect(emails.includes(`${RolesTypes.Maintainer}@test.com`.toLowerCase())).toEqual(true)
+      expect(emails.includes(`${RolesTypes.User}@test.com`.toLowerCase())).toEqual(true)
+    })
+    
     it('GET:{userId} fetch a user', async () => {
       const usersRes = await request('http://localhost:4000')
       .get('/users')
@@ -41,7 +51,7 @@ describe('Users Routes', () => {
         .send(user)
       expect(res.statusCode).toEqual(200)
       expect(res.body.name).toEqual(name)
-      expect(res.body.email).toEqual(user.email + 12)
+      expect(res.body.email).toEqual(user.email)
       expect(res.body.roleId).toEqual(user.roleId)
     })
       

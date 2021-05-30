@@ -3,7 +3,7 @@ const router = express.Router()
 const Device = require('../models/device')
 const JoiSchema = require('../util/schemas/device')
 const verify = require('../util/verify')
-const { RolesTypes } = require('../util/types/verify-types')
+const { RolesTypes } = require('../util/types/roles-types')
 
 /**
  * @swagger
