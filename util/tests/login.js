@@ -1,8 +1,8 @@
 const request = require('supertest')
 
-module.exports = async function(requiredRoleName){
+module.exports = async function(name){
     const credential = {
-        email: requiredRoleName + '@test.com',
+        email: name + '@test.com',
         password: 'password'
     }
     const res = await request('http://localhost:4000')
