@@ -30,7 +30,7 @@ describe('Users Routes', () => {
     expect(userRes.body._id).toEqual(user._id)
   })
 
-  describe("POST, PUT, and DELETE", async ()=>{
+  describe("POST, PUT, and DELETE", ()=>{
     const name = `test${Math.random()}`
     let user = {
       email: `${name}@test.com`,
@@ -80,6 +80,18 @@ describe('Users Routes', () => {
       user.email = "updated" + user.email
       const res = await request('http://localhost:4000')
         .put('/users/' + _id)
+        .set({'auth-token': adminToken})
+        .send(user)
+      expect(res.statusCode).toEqual(200)
+      expect(res.body._id).toEqual(_id)
+      expect(res.body.name).toEqual(user.name)
+      expect(res.body.email).toEqual(user.email)
+      expect(res.body.roleId).toEqual(user.roleId)
+    })
+
+    it('DELETE: delete a user', async () => {
+      const res = await request('http://localhost:4000')
+        .delete('/users/' + _id)
         .set({'auth-token': adminToken})
         .send(user)
       expect(res.statusCode).toEqual(200)
