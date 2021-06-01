@@ -3,7 +3,7 @@ const router = express.Router()
 const Device = require('../models/device')
 const JoiSchema = require('../util/schemas/device')
 const verify = require('../util/verify')
-const { VerifyTypes } = require('../util/types/verify-types')
+const { RolesTypes } = require('../util/types/roles-types')
 
 /**
  * @swagger
@@ -82,7 +82,7 @@ router.get('/', (req, res)=>{
  *         description: Some server error.
  */
 router.post('/',
-    async (req, res, next) => await verify(VerifyTypes.Maintainer, req, res, next),
+    async (req, res, next) => await verify(RolesTypes.Maintainer, req, res, next),
     async (req, res, next)=>{
     JoiSchema.validateAsync(req.body)
     .then(validationRes=>{
