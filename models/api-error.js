@@ -19,6 +19,7 @@ class APIError {
     }
 
     static middleware(err, req, res, next){
+        console.log(err)
         if (err instanceof APIError){
             res.status(err.code).json(err.message);
             return;
@@ -37,7 +38,7 @@ class APIError {
             return;
         }
         
-        res.status(500).json('Something went wrong!');
+        res.status(500).json('Something went wrong! It is probably due to Server/Node compiling');
     }
 }
 

@@ -40,6 +40,20 @@ const hashPassword = require('../util/hash-password');
  *         birthdate:
  *           type: Date               
  *           description: birthdate of user.               
+ *     updateUser:
+ *       type: object
+ *       properties:
+ *         roleId:
+ *           type: ObjectId               
+ *           description: |
+ *             The responsability of the user, a user can be an Admin or a Maintainer
+ *             which will give the user more or less permissions in controlling of other users or devices
+ *         name:
+ *           type: string               
+ *           description: Name of user.               
+ *         birthdate:
+ *           type: Date               
+ *           description: birthdate of user.               
  */
 /**
  * @swagger
@@ -109,7 +123,7 @@ router.get('/', (req, res)=>{
  *       content:
  *         application/json:
  *           schema: 
- *             $ref: '#/components/schemas/User'   
+ *             $ref: '#/components/schemas/updateUser'   
  *     responses: 
  *       200:
  *         description: User is updated successfully

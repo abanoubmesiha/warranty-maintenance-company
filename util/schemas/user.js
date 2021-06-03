@@ -17,13 +17,6 @@ const AddUserSchema = Joi.object({
     birthdate: Joi.date()
 })
 const UpdateUserSchema = Joi.object({
-    email: Joi.string()
-        .email()
-        .lowercase()
-        .required(),
-
-    password: Joi.string(),
-
     roleId: Joi.string(),
 
     name: Joi.string()

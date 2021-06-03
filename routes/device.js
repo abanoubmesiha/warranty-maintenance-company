@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 const Device = require('../models/device')
-const JoiSchema = require('../util/schemas/device')
+const { AddDeviceSchema, UpdateDeviceSchema } = require('../util/schemas/device')
 const verify = require('../util/verify')
 const { RolesTypes } = require('../util/types/roles-types')
 
@@ -84,11 +84,24 @@ router.get('/', (req, res)=>{
 router.post('/',
     async (req, res, next) => await verify(RolesTypes.Maintainer, req, res, next),
     async (req, res, next)=>{
-    JoiSchema.validateAsync(req.body)
+    AddDeviceSchema.validateAsync(req.body)
     .then(validationRes=>{
         const device = new Device(validationRes)
         device.save()
         .then(data=>res.json(data))
+        .catch(err=>next(err))
+    })
+    .catch(err=>next(err))
+})
+
+router.put('/:deviceId',
+    async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
+    async (req, res, next) => {
+    UpdateDeviceSchema.validateAsync(req.body)
+    .then(validationRes=>{
+        const { deviceId } = req.params;
+        Device.findOneAndUpdate({ '_id': deviceId }, validationRes)
+        .then(async data=>res.json(await Device.findById(data._id)))
         .catch(err=>next(err))
     })
     .catch(err=>next(err))

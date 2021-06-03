@@ -1,12 +1,24 @@
 const Joi = require('joi')
 
-const deviceValidationSchema = Joi.object({
+const AddDeviceSchema = Joi.object({
     name: Joi.string()
         .required(),
 
-    userId: Joi.string(),
+    assignedUserId: Joi.string().allow(null),
 
     history: Joi.array().items(Joi.string()),
 })
 
-module.exports = deviceValidationSchema
+const UpdateDeviceSchema = Joi.object({
+    name: Joi.string()
+        .required(),
+
+    assignedUserId: Joi.string().allow(null),
+
+    // maintenanceHistory: Joi.array().items(Joi.string()),
+})
+
+module.exports = {
+    AddDeviceSchema,
+    UpdateDeviceSchema,
+}
