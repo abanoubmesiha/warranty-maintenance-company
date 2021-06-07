@@ -1,6 +1,45 @@
 const mongoose = require('mongoose');
 const {Schema, model} = mongoose;
 const User = require('./user');
+const Role = require('./role');
+const { RolesTypes } = require('../util/types/roles-types');
+const getUser = require('../util/verify')
+
+// validator: maintenanceUserId => {
+//   console.log(maintenanceUserId)
+//   if (maintenanceUserId){
+//   let res = false;
+//   const user = User.findById(maintenanceUserId)
+//   if (!user){
+    
+//   }
+//   if (user.roleId){
+//     const role = Role.findById(user.roleId)
+//     if (role.name === RolesTypes.Maintainer) res = true
+//   }
+//   return res
+// } else {
+//   // It is okay if the value null
+//   return true
+// }
+// },
+// message: `This User isn't present in the database or not a Maintainer`
+
+const MaintenanceSchema = Schema({
+  description: {
+    type: String,
+    required: true
+  },
+  dateAndTime: Schema.Types.Date,
+  maintenanceUserId: {
+    type: Schema.Types.ObjectId,
+    validate: [
+      // { validator: getUser, msg: "This User isn't present in the database" },
+      // { validator: isUserMaintainer, msg: "This User isn't a Maintainer" }
+    ],
+    required: true
+  }
+});
 
 const DeviceSchema = Schema({
   name: {
@@ -11,6 +50,7 @@ const DeviceSchema = Schema({
     type: Schema.Types.ObjectId,
     validate: {
       validator: assignedUserId => {
+        console.log(assignedUserId)
         if (assignedUserId){
           return User.findById(assignedUserId)
         } else {
@@ -31,28 +71,18 @@ const DeviceSchema = Schema({
     ],
     required: false
   },
-  // maintenanceHistory: {
-  //   type: [Schema.Types.ObjectId],
-  //   validate: {
-  //     validator: async usersIds => {
-  //       const promises = [];
-  //       for (const userId of usersIds){
-  //         let res = await User.findById(userId).then(data=>data)
-  //         promises.push(res);
-  //       }
-  //       return !promises.includes(null)
-  //     },
-  //     message: `One of the users in history isn't present in the database`
-  //   },
-  //   required: false
-  // },
+  maintenanceHistory: {
+    type: [MaintenanceSchema],
+    required: false
+  },
 });
 
 DeviceSchema.pre('findOneAndUpdate', async function(next){
   try {
     const docBeforeUpdate = await this.model.findOne(this.getQuery());
-    const oldAssignedUserId = docBeforeUpdate.assignedUserId === null ? null : docBeforeUpdate.assignedUserId.toString()
-    const newAssignedUserId = this._update.assignedUserId === null ? null : this._update.assignedUserId.toString()
+    const oldAssignedUserId = docBeforeUpdate.assignedUserId == null ? null : docBeforeUpdate.assignedUserId.toString()
+    const newAssignedUserId = this._update.assignedUserId == null ? null : this._update.assignedUserId.toString()
+    
     if (oldAssignedUserId !== newAssignedUserId){
       const newAssigningHistory = docBeforeUpdate.assigningHistory
       newAssigningHistory.push({
@@ -61,10 +91,11 @@ DeviceSchema.pre('findOneAndUpdate', async function(next){
       })
       this._update.assigningHistory = newAssigningHistory
     }
+    this.options.runValidators = true
     next()
   } catch (err) {
     next(err)
   }
 })
-
+  
 module.exports = model('Device', DeviceSchema)
