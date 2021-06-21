@@ -46,6 +46,15 @@ const { RolesTypes } = require('../util/types/roles-types')
  *           items: 
  *             type: string
  *           description: The List of users who this task is assigned to in the past 
+ *     addMaintainence:
+ *       type: object
+ *       properties:
+ *         description:
+ *           type: string               
+ *           description: The description of the maintainence entry.               
+ *         maintenanceUserId:
+ *           type: string               
+ *           description: Maintainer ID.               
  */
 /**
  * @swagger
@@ -151,7 +160,37 @@ router.put('/:deviceId',
     })
     .catch(err=>next(err))
 })
-
+/**
+ * @swagger
+ * /:deviceId/maintenance:
+ *   post:
+ *     summary: Add a maintainence history
+ *     tags: [Devices]
+ *     parameters:
+ *       - in: header
+ *         name: auth-token
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         description: Object ID of the device to update  
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             $ref: '#/components/schemas/addMaintainence'   
+ *     responses: 
+ *       200:
+ *         description: Device is updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/addMaintainence'        
+ *       500:
+ *         description: Some server error.
+ */
 router.post('/:deviceId/maintenance/',
     async (req, res, next) => await verify(RolesTypes.Maintainer, req, res, next),
     async (req, res, next) => {

@@ -3,7 +3,7 @@ const {Schema, model} = mongoose;
 const User = require('./user');
 const Role = require('./role');
 const { RolesTypes } = require('../util/types/roles-types');
-const getUser = require('../util/verify')
+const { isUserRoleEquals } = require('../util/reusable')
 
 // validator: maintenanceUserId => {
 //   console.log(maintenanceUserId)
@@ -34,8 +34,8 @@ const MaintenanceSchema = Schema({
   maintenanceUserId: {
     type: Schema.Types.ObjectId,
     validate: [
-      // { validator: getUser, msg: "This User isn't present in the database" },
-      // { validator: isUserMaintainer, msg: "This User isn't a Maintainer" }
+      { validator: async id => await User.findById(id), msg: "This User isn't present in the database" },
+      { validator: id => isUserRoleEquals(id, RolesTypes.Maintainer), msg: "This User isn't a Maintainer" }
     ],
     required: true
   }
