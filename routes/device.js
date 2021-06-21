@@ -107,6 +107,23 @@ router.get('/', (req, res)=>{
  *               $ref: '#/components/schemas/Device'      
  *       500:
  *         description: Some server error.
+ */
+router.post('/',
+    async (req, res, next) => await verify(RolesTypes.Maintainer, req, res, next),
+    async (req, res, next)=>{
+    AddDeviceSchema.validateAsync(req.body)
+    .then(validationRes=>{
+        const device = new Device(validationRes)
+        device.save()
+        .then(data=>res.json(data))
+        .catch(err=>next(err))
+    })
+    .catch(err=>next(err))
+})
+
+/**
+ * @swagger
+ * /devices/:deviceId:
  *   put:
  *     summary: Update a device
  *     tags: [Devices]
@@ -135,19 +152,6 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.post('/',
-    async (req, res, next) => await verify(RolesTypes.Maintainer, req, res, next),
-    async (req, res, next)=>{
-    AddDeviceSchema.validateAsync(req.body)
-    .then(validationRes=>{
-        const device = new Device(validationRes)
-        device.save()
-        .then(data=>res.json(data))
-        .catch(err=>next(err))
-    })
-    .catch(err=>next(err))
-})
-
 router.put('/:deviceId',
     async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
     async (req, res, next) => {
@@ -158,6 +162,67 @@ router.put('/:deviceId',
         .then(async data=>res.json(await Device.findById(data._id)))
         .catch(err=>next(err))
     })
+    .catch(err=>next(err))
+})
+/**
+ * @swagger
+ * /devices/{deviceId}:
+ *   get:
+ *     summary: Get all devices or a user by ID
+ *     tags: [Devices]
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Object ID of the device to get   
+ *     responses: 
+ *       200:
+ *         description: The list of devices
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/Device'        
+ *       500:
+ *         description: Some server error.
+ *   delete:
+ *     summary: Delete a device
+ *     tags: [Devices]
+ *     parameters:
+ *       - in: header
+ *         name: auth-token
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         description: Object ID of the device to Delete  
+ *     responses: 
+ *       200:
+ *         description: Device is deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items: 
+ *                 $ref: '#/components/schemas/updateDevice'        
+ *       500:
+ *         description: Some server error.
+ */
+router.get('/:deviceId', (req, res)=>{
+    const { deviceId } = req.params;
+    Device.findById(deviceId)
+    .then(data=>res.json(data))
+    .catch(err=>res.json(err))
+})
+
+router.delete('/:deviceId',
+    async (req, res, next) => await verify(RolesTypes.Admin, req, res, next),
+    async (req, res, next) => {
+    const { deviceId } = req.params;
+    Device.findByIdAndDelete(deviceId)
+    .then(data=>res.json(data))
     .catch(err=>next(err))
 })
 /**
