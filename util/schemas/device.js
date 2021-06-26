@@ -20,8 +20,14 @@ const UpdateDeviceMaintenanceSchema = Joi.object({
     maintenanceUserId: Joi.string().required()
 })
 
+extractUpdateDeviceStructure = device => ({
+    name: device.name,
+    assignedUserId: device.assignedUserId
+})
+
 module.exports = {
     AddDeviceSchema,
     UpdateDeviceSchema,
     UpdateDeviceMaintenanceSchema,
+    extractUpdateDeviceStructure
 }
