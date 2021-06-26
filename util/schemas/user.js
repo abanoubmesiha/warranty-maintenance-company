@@ -25,7 +25,14 @@ const UpdateUserSchema = Joi.object({
     birthdate: Joi.date()
 })
 
+const extractUpdateUserStructure = user => ({
+    roleId: user.roleId,
+    name: user.name,
+    birthdate: user.birthdate
+})
+
 module.exports = {
     AddUserSchema,
     UpdateUserSchema,
+    extractUpdateUserStructure
 }
