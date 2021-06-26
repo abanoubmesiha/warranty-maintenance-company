@@ -5,26 +5,6 @@ const Role = require('./role');
 const { RolesTypes } = require('../util/types/roles-types');
 const { isUserRoleEquals } = require('../util/reusable')
 
-// validator: maintenanceUserId => {
-//   console.log(maintenanceUserId)
-//   if (maintenanceUserId){
-//   let res = false;
-//   const user = User.findById(maintenanceUserId)
-//   if (!user){
-    
-//   }
-//   if (user.roleId){
-//     const role = Role.findById(user.roleId)
-//     if (role.name === RolesTypes.Maintainer) res = true
-//   }
-//   return res
-// } else {
-//   // It is okay if the value null
-//   return true
-// }
-// },
-// message: `This User isn't present in the database or not a Maintainer`
-
 const MaintenanceSchema = Schema({
   description: {
     type: String,

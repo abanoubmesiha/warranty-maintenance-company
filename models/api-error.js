@@ -30,7 +30,6 @@ class APIError {
     }
 
     static middleware(err, req, res, next){
-        console.log(err)
         if (err instanceof APIError){
             res.status(err.code).json(err.message);
             return;
