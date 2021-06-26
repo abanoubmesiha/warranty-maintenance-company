@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 const Joi = require('joi')
+
+const objectIdErrMsg = err => {
+    const { path, value, kind } = err.reason;
+    return `Sorry, the value "${value}" of "${path}" properity is not of type "${kind}"`
+}
+const makeItMeaningful = err => {
+    if (err.name === "ValidationError") return err.message
+    if (err.reason.kind === "ObjectId") return objectIdErrMsg(err)
+    return err.message
+}
+
 class APIError {
     constructor(code, message){
         this.code = code;
@@ -24,7 +35,7 @@ class APIError {
             return;
         }
         if (err instanceof mongoose.Error){
-            res.status(400).json(err.message);
+            res.status(400).json(makeItMeaningful(err));
             return;
         }
         if (err.isJoi){
@@ -37,7 +48,7 @@ class APIError {
             return;
         }
         
-        res.status(500).json('Something went wrong!');
+        res.status(500).json('Something went wrong! It is probably due to Server/Node compiling');
     }
 }
 

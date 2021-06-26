@@ -1,4 +1,5 @@
 const request = require('supertest')
+const { extractUpdateUserStructure } = require('../util/schemas/user')
 const tokenOf = require('../util/tests/login')
 const { RolesTypes } = require('../util/types/roles-types')
 
@@ -77,11 +78,10 @@ describe('Users Routes', () => {
       
     it('PUT: update a user', async () => {
       user.name = "updated" + user.name
-      user.email = "updated" + user.email
       const res = await request('http://localhost:4000')
         .put('/users/' + _id)
         .set({'auth-token': adminToken})
-        .send(user)
+        .send(extractUpdateUserStructure(user))
       expect(res.statusCode).toEqual(200)
       expect(res.body._id).toEqual(_id)
       expect(res.body.name).toEqual(user.name)
