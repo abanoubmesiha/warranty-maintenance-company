@@ -5,12 +5,12 @@ const { RolesTypes } = require('../util/types/roles-types')
 
 describe('Users Routes', () => {
 
-  it('GET: fetch an array of users', async () => {
-    const res = await request('http://localhost:4000')
-    .get('/users')
-    expect(res.statusCode).toEqual(200)
-    expect(Array.isArray(res.body)).toEqual(true)
-  })
+  // it('GET: fetch an array of users', async () => {
+  //   const res = await request('http://localhost:4000')
+  //   .get('/users')
+  //   expect(res.statusCode).toEqual(200)
+  //   expect(Array.isArray(res.body)).toEqual(true)
+  // })
   
   it('Check for TEST USERS FOR ALL ROLES', async () => {
     const res = await request('http://localhost:4000')
@@ -21,14 +21,40 @@ describe('Users Routes', () => {
     expect(emails.includes(`${RolesTypes.User}@test.com`.toLowerCase())).toEqual(true)
   })
   
-  it('GET:{userId} fetch a user', async () => {
-    const usersRes = await request('http://localhost:4000')
-    .get('/users')
-    const user = usersRes.body[0]
-    const userRes = await request('http://localhost:4000')
-    .get('/users/' + user._id)
-    expect(userRes.statusCode).toEqual(200)
-    expect(userRes.body._id).toEqual(user._id)
+  describe("GET:{userId}", ()=>{
+    it('fetch a user', async () => {
+      const usersRes = await request('http://localhost:4000')
+      .get('/users')
+      const user = usersRes.body[0]
+      const userRes = await request('http://localhost:4000')
+      .get('/users/' + user._id)
+      expect(userRes.statusCode).toEqual(200)
+      expect(userRes.body._id).toEqual(user._id)
+    })
+
+    it('do not pass a user id, it should fetch an array of users', async () => {
+      const userRes = await request('http://localhost:4000')
+      .get('/users/')
+
+      expect(userRes.statusCode).toEqual(200)
+      expect(Array.isArray(userRes.body)).toBeTruthy()
+    })
+
+    it('pass a not existing user id, should return Not Found', async () => {
+      const userRes = await request('http://localhost:4000')
+      .get('/users/' + '60ad612f08af4d23bcb72000')
+
+      expect(userRes.statusCode).toEqual(404)
+      expect(typeof userRes.body).toEqual('string')
+    })
+
+    it('pass a wrong user id, should return Unprocessable Entity', async () => {
+      const userRes = await request('http://localhost:4000')
+      .get('/users/' + '0123')
+
+      expect(userRes.statusCode).toEqual(422)
+      expect(typeof userRes.body).toEqual('string')
+    })
   })
 
   describe("POST, PUT, and DELETE", ()=>{

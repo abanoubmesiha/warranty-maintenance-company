@@ -60,24 +60,24 @@ const hashPassword = require('../util/hash-password');
  * tags:
  *   name: Users
  */
-/**
- * @swagger
- * /users:
- *   get:
- *     summary: Returns the list of users
- *     tags: [Users]
- *     responses: 
- *       200:
- *         description: The list of users
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items: 
- *                 $ref: '#/components/schemas/User'        
- *       500:
- *         description: Some server error.   
- */
+// /**
+//  * @swagger
+//  * /users:
+//  *   get:
+//  *     summary: Returns the list of users
+//  *     tags: [Users]
+//  *     responses: 
+//  *       200:
+//  *         description: The list of users
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: array
+//  *               items: 
+//  *                 $ref: '#/components/schemas/User'        
+//  *       500:
+//  *         description: Some server error.   
+//  */
 router.get('/', (req, res)=>{
     User.find()
     .then(data=>res.json(data))
@@ -88,14 +88,14 @@ router.get('/', (req, res)=>{
  * @swagger
  * /users/{userId}:
  *   get:
- *     summary: Get all users or a user by ID
+ *     summary: Get user by ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: userId
  *         schema:
  *           type: string
- *         required: false
+ *         required: true
  *         description: Object ID of the user to get   
  *     responses: 
  *       200:
@@ -157,11 +157,14 @@ router.get('/', (req, res)=>{
  *       500:
  *         description: Some server error.
  */
-router.get('/:userId', (req, res)=>{
+router.get('/:userId', (req, res, next)=>{
     const { userId } = req.params;
     User.findById(userId)
-    .then(data=>res.json(data))
-    .catch(err=>res.json(err))
+    .then(data=>{
+        if (!data) return next(APIError.notFound('Sorry, We do not have a user with this id.'))
+        return res.json(data)
+    })
+    .catch(err=>next(err))
 })
 
 router.put('/:userId',
