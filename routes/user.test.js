@@ -48,7 +48,7 @@ describe('Users Routes', () => {
       expect(typeof userRes.body).toEqual('string')
     })
 
-    it('pass a wrong user id, should return Unprocessable Entity', async () => {
+    it('pass a wrong mongoose id, should return Unprocessable Entity', async () => {
       const userRes = await request('http://localhost:4000')
       .get('/users/' + '0123')
 
