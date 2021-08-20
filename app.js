@@ -21,6 +21,9 @@ const options = {
             },
             {
                 url: `http://localhost:${port}/`
+            },
+            {
+                url: `http://159.89.102.206/`
             }
         ]
     },
